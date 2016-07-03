@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!-- was: <?xml version="1.0" encoding="UTF-8"?> -->
+<?xml version='1.0' encoding='UTF-8' ?> 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p"
@@ -13,8 +12,9 @@
        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-
- <bean id="propertyConfigurer"
+    
+   
+<bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
           p:location="/WEB-INF/jdbc.properties" />
 
@@ -23,8 +23,37 @@
     p:driverClassName="${jdbc.driverClassName}"
     p:url="${jdbc.url}"
     p:username="${jdbc.username}"
-    p:password="${jdbc.password}"/>
+    p:password="${jdbc.password}" />
 
-    <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
-
+<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" /> 
+        <property name="annotatedClasses">
+        <list>
+           <value>com.movies.model.Category</value>  
+           <value>com.movies.model.Movie</value>  
+           <value>com.movies.model.Orders</value>  
+        </list>
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop> 
+            </props>
+        </property> 
+    </bean> 
+    
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory" />
+    </bean> 
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="find*" read-only="true" />
+            <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>
+    
+    <bean id="categoryDao" class="com.movies.model.CategoryDao" />
+    <bean id="movieDao" class="com.movies.model.MovieDao" />
+    <bean id="ordersDao" class="com.movies.model.OrdersDao" />
 </beans>

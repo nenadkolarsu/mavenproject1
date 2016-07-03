@@ -15,9 +15,10 @@
 
     
     <context:component-scan base-package="com.movies.controller" /> 
+    <context:component-scan base-package="com.movies.model" /> 
     <mvc:annotation-driven />
     <mvc:resources mapping="/resources/**" location="/resources/" />
-        <mvc:resources mapping="/resources/images**" location="/resources/images" />
+    
     <!--bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
           p:location="/WEB-INF/jdbc.properties" />
